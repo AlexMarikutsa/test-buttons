@@ -2,14 +2,14 @@ package com.testbuttons.ui.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,24 +18,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.testbuttons.R
 import com.testbuttons.ui.theme.TestButtonsTheme
 
-val mainGreen = Color(0xFF6abd6a)
-val topButtonColor = Color(0xFF5cb860)
+val mainGreen = Color(0xFF43A980)
+val frontGreen = Color(0xFF50B58D)
 
 @Composable
 fun GreenButton() {
+    val buttonShape = RoundedCornerShape(18.dp)
     var isPressed by remember { mutableStateOf(false) }
-    val buttonDepth = 10.dp
-    val buttonShadowSize = 3.dp
+    val buttonDepth = 17.dp
     val offset: Dp by animateDpAsState(
         targetValue = if (isPressed) buttonDepth else 0.dp,
         label = "Button animation"
@@ -44,23 +51,26 @@ fun GreenButton() {
     Box(
         modifier = Modifier
     ) {
-        Box(
-            modifier = Modifier
-                .offset(y = buttonDepth + buttonShadowSize)
-                .matchParentSize()
-                .alpha(if (offset == 0.dp) 0.08f else 0f)
-                .background(
-                    color = Color.Black,
-                    shape = MaterialTheme.shapes.medium
-                )
-        )
+        if (!isPressed) {
+            Box(
+                modifier = Modifier
+                    .offset(y = buttonDepth)
+                    .matchParentSize()
+                    .graphicsLayer {
+                        shadowElevation = 3.dp.toPx()
+                        translationY = 3.dp.toPx()
+                        shape = buttonShape
+                        clip = true
+                    }
+            )
+        }
         Box(
             modifier = Modifier
                 .offset(y = buttonDepth)
                 .matchParentSize()
                 .background(
                     color = mainGreen,
-                    shape = MaterialTheme.shapes.medium
+                    shape = buttonShape
                 )
         )
         Box(
@@ -80,58 +90,81 @@ fun GreenButton() {
                 }
                 .background(
                     color = mainGreen,
-                    shape = MaterialTheme.shapes.medium
+                    shape = buttonShape
                 )
         ) {
             Box(
                 modifier = Modifier
+                    .padding(1.dp)
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xFF8ad18a),
-                                Color(0xFFf0faf0)
+                                Color(0xFFFFFFFF).copy(alpha = 0.36f),
+                                Color(0xFFFFFFFF)
+                                    .copy(alpha = if (isPressed) 0.6f else 0.74f)
                             )
                         ),
-                        shape = MaterialTheme.shapes.medium
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = Color(0xFF5fc264),
-                        shape = MaterialTheme.shapes.medium
+                        shape = buttonShape
                     )
             ) {
                 Box(
                     modifier = Modifier
-                        .padding(vertical = 2.dp)
-                        .size(140.dp)
-                        .then(
-                            if (offset == 0.dp) {
-                                Modifier
-                                    .background(
-                                        brush = Brush.verticalGradient(
-                                            colors = listOf(
-                                                topButtonColor,
-                                                Color(0xFF80f286)
-                                            )
-                                        ),
-                                        shape = MaterialTheme.shapes.medium
-                                    )
-                            } else {
-                                Modifier
-                                    .background(
-                                        color = topButtonColor,
-                                        shape = MaterialTheme.shapes.medium
-                                    )
-                            }
+                        .padding(vertical = 1.dp)
+                        .background(
+                            color = frontGreen,
+                            shape = buttonShape
                         )
-
                 ) {
-                    Text(
-                        text = "Старт",
-                        fontSize = 18.sp,
-                        color = Color.White,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                    Box(
+                        modifier = Modifier
+                            .width(222.dp)
+                            .height(218.dp)
+                            .then(
+                                if (!isPressed) {
+                                    Modifier
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(
+                                                    Color(0xFFFFFFFF).copy(alpha = 0.13f),
+                                                    Color(0xFFFFFFFF).copy(alpha = 0f),
+                                                    Color(0xFFFFFFFF).copy(alpha = 0.3f)
+                                                )
+                                            ),
+                                            shape = buttonShape
+                                        )
+                                } else {
+                                    Modifier
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(
+                                                    Color(0xFFFFFFFF).copy(alpha = 0.13f),
+                                                    Color(0xFFFFFFFF).copy(alpha = 0f),
+                                                    Color(0xFFFFFFFF).copy(alpha = 0.2f)
+                                                )
+                                            ),
+                                            shape = buttonShape
+                                        )
+                                }
+                            )
+
+                    ) {
+                        Text(
+                            text = "Старт",
+                            style = TextStyle(
+                                fontSize = 38.sp,
+                                fontFamily = FontFamily(Font(R.font.pt_sans)),
+                                fontWeight = FontWeight.Normal,
+                                color = Color.White,
+                                shadow = Shadow(
+                                    color = Color.Gray,
+                                    offset = Offset(0f, 1f),
+                                    blurRadius = 2f
+                                )
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                        )
+                    }
                 }
             }
         }
